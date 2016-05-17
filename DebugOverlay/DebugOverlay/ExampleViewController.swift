@@ -10,11 +10,9 @@ import UIKit
 
 class ExampleViewController: UIViewController {
     
-    /// 
     var overlay: OverLay?
     
     @IBAction func toggleDevMode(sender: AnyObject) {
-        
         guard overlay == nil else {
             overlay?.tearDown()
             overlay = nil

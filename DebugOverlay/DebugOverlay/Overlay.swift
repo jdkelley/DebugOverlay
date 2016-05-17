@@ -15,39 +15,42 @@ class OverLay : NSObject {
     private var logger: Logger!
     private var defaultLoggerDependencies: LoggerDI!
     
-    enum EditMode { case None, Inspect }
+    private enum EditMode { case None, Inspect }
     
     private var currentEditMode: EditMode = .None
     private var inEditMode: Bool = false
     private var hidden = false
+    private var loggerOpen: Bool = false
     
     // MARK: - Views
     
-    var hamburgerButton: UIButton!
+    private var hamburgerButton: UIButton!
     
-    var toggleInspectButton: UIButton!
-    var clearLogButton: UIButton!
-    var shareButton: UIButton!
+    private var toggleInspectButton: UIButton!
+    private var clearLogButton: UIButton!
+    private var shareButton: UIButton!
     
-    var hideAllButton: UIButton!
+    private var hideAllButton: UIButton!
     
-    var addDismissLogButton: UIButton!
+    private var addDismissLogButton: UIButton!
     
-    var overlayView: UIView!
-    var logView: UITextView!
+    private var overlayView: UIView!
+    private var logView: UITextView!
     
     // MARK: - Theme and Dimensions
-    let padding: CGFloat = 10.0
+    private let padding: CGFloat = 10.0
     
-    var initialHeight: CGFloat = 0.0
-    var initialWidth: CGFloat = 0.0
-    var initialPosition: CGPoint = CGPointZero
-    var overlayBGColor: UIColor = UIColor.whiteColor()
-    var textColor: UIColor = UIColor.blackColor()
+    private var initialHeight: CGFloat = 0.0
+    private var initialWidth: CGFloat = 0.0
+    private var initialPosition: CGPoint = CGPointZero
+    private var overlayBGColor: UIColor = UIColor.whiteColor()
+    private var textColor: UIColor = UIColor.blackColor()
     
-    var initialButtonX: CGFloat = (UIScreen.mainScreen().bounds.width / 2) - 25
-    var initialButtonY: CGFloat = 50.0
-    var buttonSize = CGSize(width: 50, height: 50)
+    private var initialButtonX: CGFloat = (UIScreen.mainScreen().bounds.width / 2) - 25
+    private var initialButtonY: CGFloat = 50.0
+    private var buttonSize = CGSize(width: 50, height: 50)
+    
+    // MARK: - Initializers
     
     convenience init(vc: UIViewController) {
         self.init(vc: vc, overlayBGColor: UIColor(red: 0, green: 0, blue: 0, alpha: 0.3), textColor: UIColor.whiteColor())
@@ -73,7 +76,9 @@ class OverLay : NSObject {
         setupAddLoggerButton()
     }
     
-    func newLog() {
+    // MARK: - UI
+    
+    private func newLog() {
         setUpLogger()
         overlayView = UIView(frame: CGRect(origin: initialPosition, size: CGSize(width: initialWidth, height: initialHeight)))
         overlayView.backgroundColor = overlayBGColor
@@ -92,11 +97,7 @@ class OverLay : NSObject {
         owner.view.addSubview(overlayView)
     }
     
-    // MARK: - UI
-    
-    var loggerOpen: Bool = false
-    
-    func setupAddLoggerButton() {
+    private func setupAddLoggerButton() {
         addDismissLogButton = UIButton(frame: CGRect(origin: CGPointMake(initialButtonX, initialButtonY), size: buttonSize))
         addDismissLogButton.layer.cornerRadius = addDismissLogButton.frame.height / 2
         addDismissLogButton.clipsToBounds = true
@@ -113,60 +114,9 @@ class OverLay : NSObject {
         })
     }
     
-    func addCloseTapped(sender: UIButton) {
-        if !loggerOpen {
-            animateAddButtonToCloseButton(0.0)
-        } else {
-            animateCloseButtonToAddButton(0.0)
-        }
-    }
+    // MARK: - Button Setup
     
-    func animateAddButtonToCloseButton(delayToExpect: NSTimeInterval) {
-        setupHamburger()
-        newLog()
-        
-        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseInOut, animations: {
-            let transform = CGAffineTransformTranslate(self.addDismissLogButton.transform, (2 * self.padding) - self.addDismissLogButton.frame.origin.x, 0.0)
-            self.addDismissLogButton.transform = CGAffineTransformRotate(transform, CGFloat(M_PI_4))
-            
-            }, completion: nil)
-        UIView.animateWithDuration(0.25, delay: 0.15, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {self.hamburgerButton.transform = CGAffineTransformMakeScale(1.15, 1.15); self.hamburgerButton.alpha = 1.0}, completion: { (succeeded) in
-            UIView.animateWithDuration(0.40, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {self.hamburgerButton.transform = CGAffineTransformMakeScale(1.0, 1.0)}, completion: nil)
-        })
-        UIView.animateWithDuration(0.25, delay: 0.3, options: .CurveEaseInOut, animations: {
-            self.overlayView.transform = CGAffineTransformMakeTranslation(0, 0)
-            self.overlayView.alpha = 1.0
-            }, completion: nil)
-        
-        loggerOpen = true
-    }
-    
-    func animateCloseButtonToAddButton(delayToExpect: NSTimeInterval) {
-        
-        if inEditMode {
-            animateCloseEditMode(0.25)
-            inEditMode = false
-        }
-        
-        // Rotate dismiss button to add button and move to middle
-        UIView.animateWithDuration(0.35, delay: 0.0, options: .CurveEaseInOut, animations: {
-            self.addDismissLogButton.transform = CGAffineTransformMakeRotation(0)
-            self.addDismissLogButton.transform = CGAffineTransformMakeTranslation(0.0, 0.0)
-            }, completion: nil)
-        
-        // Wink out hamburger button and unload button
-        UIView.animateWithDuration(0.22, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {self.hamburgerButton.transform = CGAffineTransformMakeScale(0.3, 0.3);self.hamburgerButton.alpha = 0.0}, completion: { _ in self.unloadButton(self.hamburgerButton)} )
-        
-        // push log overlay off bottom of screen and unload overlay
-        UIView.animateWithDuration(0.20, delay: 0.10, options: .CurveEaseInOut, animations: {
-            self.overlayView.transform = CGAffineTransformMakeTranslation(0, self.owner.view.frame.height)
-            self.overlayView.alpha = 0.0
-            }, completion: { _ in self.unloadLog()})
-        
-        loggerOpen = false
-    }
-    
-    func setupHamburger() {
+    private func setupHamburger() {
         hamburgerButton = UIButton(frame: CGRect(origin: CGPointMake(initialButtonX, initialButtonY), size: buttonSize))
         hamburgerButton.layer.cornerRadius = hamburgerButton.frame.height / 2
         hamburgerButton.clipsToBounds = true
@@ -178,7 +128,7 @@ class OverLay : NSObject {
         hamburgerButton.transform = CGAffineTransformMakeScale(0.7, 0.7)
     }
     
-    func setupRefreshButton() {
+    private func setupRefreshButton() {
         clearLogButton = UIButton(frame: CGRect(origin: CGPointMake(initialButtonX - 75.0 - (3 * padding / 2), 2 * initialButtonY + padding), size: buttonSize))
         clearLogButton.layer.cornerRadius = clearLogButton.frame.height / 2
         clearLogButton.clipsToBounds = true
@@ -190,7 +140,7 @@ class OverLay : NSObject {
         clearLogButton.transform = CGAffineTransformMakeTranslation(75.0 + (3 * padding / 2), -(initialButtonY + padding))
     }
 
-    func setupHideButton() {
+    private func setupHideButton() {
         hideAllButton = UIButton(frame: CGRect(origin: CGPointMake(initialButtonX - 25.0 - (padding / 2), 2 * initialButtonY + padding), size: buttonSize))
         hideAllButton.layer.cornerRadius = hideAllButton.frame.height / 2
         hideAllButton.clipsToBounds = true
@@ -203,7 +153,7 @@ class OverLay : NSObject {
         hideAllButton.transform = CGAffineTransformMakeTranslation(25.0 + (padding / 2), -(initialButtonY + padding))
     }
     
-    func setupInspectButton() {
+    private func setupInspectButton() {
         toggleInspectButton = UIButton(frame: CGRect(origin: CGPointMake(initialButtonX + 25.0 + (padding / 2), 2 * initialButtonY + padding), size: buttonSize))
         toggleInspectButton.layer.cornerRadius = toggleInspectButton.frame.height / 2
         toggleInspectButton.clipsToBounds = true
@@ -215,7 +165,7 @@ class OverLay : NSObject {
         toggleInspectButton.transform = CGAffineTransformMakeTranslation(-(25.0 + (padding / 2)), -(initialButtonY + padding))
     }
     
-    func setupShareButton() {
+    private func setupShareButton() {
         shareButton = UIButton(frame: CGRect(origin: CGPointMake(initialButtonX + 75.0 + (3 * padding / 2), 2 * initialButtonY + padding), size: buttonSize))
         shareButton.layer.cornerRadius = shareButton.frame.height / 2
         shareButton.clipsToBounds = true
@@ -228,6 +178,14 @@ class OverLay : NSObject {
     }
     
     // MARK: - Actions
+    
+    func addCloseTapped(sender: UIButton) {
+        if !loggerOpen {
+            animateAddButtonToCloseButton(0.0)
+        } else {
+            animateCloseButtonToAddButton(0.0)
+        }
+    }
     
     func hideAllTapped(sender: UIButton) {
         
@@ -268,11 +226,6 @@ class OverLay : NSObject {
         Log("Share Log Tapped")
     }
     
-    func shareLog() {
-        let activityVC = UIActivityViewController(activityItems: [logger.getLog()], applicationActivities: nil)
-        owner.presentViewController(activityVC, animated: true, completion: nil)
-    }
-    
     func hamburgerTapped(sender: UIButton) {
         Log("Hamburger Tapped")
         if !hidden {
@@ -295,20 +248,62 @@ class OverLay : NSObject {
         inEditMode = !inEditMode
     }
     
-    // was 0.15, .20
-    func buttonPressedAnimation(btn: UIButton) -> (NSTimeInterval) {
+    // MARK: Animations
+    
+    private  func animateAddButtonToCloseButton(delayToExpect: NSTimeInterval) {
+        setupHamburger()
+        newLog()
+        
+        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseInOut, animations: {
+            let transform = CGAffineTransformTranslate(self.addDismissLogButton.transform, (2 * self.padding) - self.addDismissLogButton.frame.origin.x, 0.0)
+            self.addDismissLogButton.transform = CGAffineTransformRotate(transform, CGFloat(M_PI_4))
+            
+            }, completion: nil)
+        UIView.animateWithDuration(0.25, delay: 0.15, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {self.hamburgerButton.transform = CGAffineTransformMakeScale(1.15, 1.15); self.hamburgerButton.alpha = 1.0}, completion: { (succeeded) in
+            UIView.animateWithDuration(0.40, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {self.hamburgerButton.transform = CGAffineTransformMakeScale(1.0, 1.0)}, completion: nil)
+        })
+        UIView.animateWithDuration(0.25, delay: 0.3, options: .CurveEaseInOut, animations: {
+            self.overlayView.transform = CGAffineTransformMakeTranslation(0, 0)
+            self.overlayView.alpha = 1.0
+            }, completion: nil)
+        
+        loggerOpen = true
+    }
+    
+    private func animateCloseButtonToAddButton(delayToExpect: NSTimeInterval) {
+        
+        if inEditMode {
+            animateCloseEditMode(0.25)
+            inEditMode = false
+        }
+        
+        // Rotate dismiss button to add button and move to middle
+        UIView.animateWithDuration(0.35, delay: 0.0, options: .CurveEaseInOut, animations: {
+            self.addDismissLogButton.transform = CGAffineTransformMakeRotation(0)
+            self.addDismissLogButton.transform = CGAffineTransformMakeTranslation(0.0, 0.0)
+            }, completion: nil)
+        
+        // Wink out hamburger button and unload button
+        UIView.animateWithDuration(0.22, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {self.hamburgerButton.transform = CGAffineTransformMakeScale(0.3, 0.3);self.hamburgerButton.alpha = 0.0}, completion: { _ in self.unloadButton(self.hamburgerButton)} )
+        
+        // push log overlay off bottom of screen and unload overlay
+        UIView.animateWithDuration(0.20, delay: 0.10, options: .CurveEaseInOut, animations: {
+            self.overlayView.transform = CGAffineTransformMakeTranslation(0, self.owner.view.frame.height)
+            self.overlayView.alpha = 0.0
+            }, completion: { _ in self.unloadLog()})
+        
+        loggerOpen = false
+    }
+
+    
+    private func buttonPressedAnimation(btn: UIButton) {
         btn.transform = CGAffineTransformMakeScale(1.2, 1.2)
         UIView.animateWithDuration(0.25, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 1, options: [], animations:  {
             btn.transform = CGAffineTransformMakeScale(1.0, 1.0)
             }, completion: nil)
-        
-        //        UIView.animateWithDuration(0.10, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: .CurveEaseInOut, animations:  {btn.transform = CGAffineTransformMakeScale(1.2, 1.2)}, completion: { (succeeded) in
-        //            UIView.animateWithDuration(0.10, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {btn.transform = CGAffineTransformMakeScale(1.0, 1.0)}, completion: nil)
-        //        })
-        return 0.35
     }
     
-    func animateToEditMode() {
+    private func animateToEditMode() {
         UIView.animateWithDuration(0.35, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {
             self.clearLogButton.alpha = 1.0
             self.clearLogButton.transform = CGAffineTransformMakeTranslation(0.0, 0.0)
@@ -328,7 +323,7 @@ class OverLay : NSObject {
         
     }
     
-    func animateCloseEditMode(duration: NSTimeInterval = 0.35) {
+    private func animateCloseEditMode(duration: NSTimeInterval = 0.35) {
         UIView.animateWithDuration(0.35, delay: 0.30, usingSpringWithDamping: 1, initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations:  {
             self.clearLogButton.alpha = 0.0
             self.clearLogButton.transform = CGAffineTransformMakeTranslation(75.0 + (3 * self.padding / 2), -(self.initialButtonY + self.padding))
@@ -347,29 +342,27 @@ class OverLay : NSObject {
             }, completion: { _ in self.unloadButton(self.shareButton) })
     }
     
-    func unloadButton(btn: UIButton) {
+    // MARK: - Custom Functions
+    
+    private func shareLog() {
+        let activityVC = UIActivityViewController(activityItems: [logger.getLog()], applicationActivities: nil)
+        owner.presentViewController(activityVC, animated: true, completion: nil)
+    }
+    
+    // MARK: Cleanup
+    
+    private func unloadButton(btn: UIButton) {
         var btn: UIButton! = btn
         btn.removeFromSuperview()
         btn = nil
     }
     
-    func unloadLog() {
+    private func unloadLog() {
         logger = nil
         logView.removeFromSuperview()
         overlayView.removeFromSuperview()
         logView = nil
         overlayView = nil
-    }
-    
-    func tearDown() {
-        owner = nil
-        logger = nil
-        logView.removeFromSuperview()
-        overlayView.removeFromSuperview()
-        addDismissLogButton.removeFromSuperview()
-        logView = nil
-        overlayView = nil
-        addDismissLogButton = nil
     }
     
     private func setUpLogger() {
@@ -387,6 +380,54 @@ class OverLay : NSObject {
         logView.text = updatedLog
         if logView.text.characters.count > 0 {
             logView.scrollRangeToVisible(NSMakeRange(logView.text.characters.count - 1, 0))
+        }
+    }
+    
+    // MARK: - Public API
+    
+    func tearDown() {
+        owner = nil
+        logger = nil
+        defaultLoggerDependencies = nil
+        
+        if logView != nil {
+            logView.removeFromSuperview()
+            logView = nil
+        }
+        
+        if overlayView != nil {
+            overlayView.removeFromSuperview()
+            overlayView = nil
+        }
+        
+        if addDismissLogButton != nil {
+            addDismissLogButton.removeFromSuperview()
+            addDismissLogButton = nil
+        }
+        
+        if hamburgerButton != nil {
+            hamburgerButton.removeFromSuperview()
+            hamburgerButton = nil
+        }
+        
+        if toggleInspectButton != nil {
+            toggleInspectButton.removeFromSuperview()
+            toggleInspectButton = nil
+        }
+        
+        if clearLogButton != nil {
+            clearLogButton.removeFromSuperview()
+            clearLogButton = nil
+        }
+        
+        if shareButton != nil {
+            shareButton.removeFromSuperview()
+            shareButton = nil
+        }
+        
+        if hideAllButton != nil {
+            hideAllButton.removeFromSuperview()
+            hideAllButton = nil
         }
     }
 }
