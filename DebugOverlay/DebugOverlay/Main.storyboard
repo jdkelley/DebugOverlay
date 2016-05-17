@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Example View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ExampleViewController" customModule="DebugOverlay" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="yfI-Ci-YkP">
+                                <rect key="frame" x="0.0" y="52" width="600" height="504"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="uDf-of-MJE">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="252"/>
+                                        <subviews>
+                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ee9-a5-IzS" userLabel="Log 1">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="252"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="Log 1">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="logButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4tz-aj-dg9"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iO5-32-FFg" userLabel="Log 2">
+                                                <rect key="frame" x="300" y="0.0" width="300" height="252"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="Log 2">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="logButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jx0-JA-H5P"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="kAA-bH-qLF">
+                                        <rect key="frame" x="0.0" y="252" width="600" height="252"/>
+                                        <subviews>
+                                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6UR-wj-s06" userLabel="Log 1">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="252"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="Log 3">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="logButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UOP-Nb-tbb"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PEx-0L-PD4" userLabel="Log 2">
+                                                <rect key="frame" x="300" y="0.0" width="300" height="252"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="Log 4">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="logButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="B0j-Yk-oLX"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kyw-Q6-0wn">
+                                <rect key="frame" x="538" y="25" width="22" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="opj-Kc-uYc"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="toggleDevMode:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lMX-Ro-iSo"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="yfI-Ci-YkP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="6g0-79-640"/>
+                            <constraint firstItem="Kyw-Q6-0wn" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="5" id="PSm-88-add"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="yfI-Ci-YkP" secondAttribute="bottom" id="REd-uz-zEY"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Kyw-Q6-0wn" secondAttribute="trailing" constant="20" id="ho2-7Q-Nsp"/>
+                            <constraint firstItem="yfI-Ci-YkP" firstAttribute="top" secondItem="Kyw-Q6-0wn" secondAttribute="bottom" constant="5" id="s5Q-OH-EYU"/>
+                            <constraint firstAttribute="trailing" secondItem="yfI-Ci-YkP" secondAttribute="trailing" id="tYm-Lw-yxV"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="log1Button" destination="ee9-a5-IzS" id="Haz-IE-zej"/>
+                        <outlet property="log2Button" destination="iO5-32-FFg" id="iZs-yQ-GY7"/>
+                        <outlet property="log3Button" destination="6UR-wj-s06" id="jol-pp-EIr"/>
+                        <outlet property="log4Button" destination="PEx-0L-PD4" id="aQN-Lf-ix2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="357" y="336"/>
+        </scene>
+    </scenes>
+</document>
