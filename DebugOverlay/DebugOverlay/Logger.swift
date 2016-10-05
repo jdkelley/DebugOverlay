@@ -14,15 +14,15 @@ class Logger {
     // MARK: - Properties
     
     /// This holds the closure that can be used to update the View.
-    private var updateClosure: ((updatedLog: String) -> Void)?
+    fileprivate var updateClosure: ((_ updatedLog: String) -> Void)?
     
     /// This holds the prompt string that will prepend any logged message.
-    private var promptString: String?
+    fileprivate var promptString: String?
     
     /// The log. Access this use the getter (getLog()) and setter (log()).
-    private var log: String = "" {
+    fileprivate var log: String = "" {
         didSet {
-            updateClosure?(updatedLog: log)
+            updateClosure?(log)
         }
     }
     
@@ -31,12 +31,12 @@ class Logger {
     /// Shared instance. Is threadsafe.
     static let sharedInstance = Logger()
     
-    private init() { }
+    fileprivate init() { }
     
     // MARK: - Public API
     
     /// Append to log property
-    func log(message: String) {
+    func log(_ message: String) {
         log += ("\n\(promptString ?? "# ")" + message)
     }
     
@@ -47,7 +47,7 @@ class Logger {
     
     /// Sets the dependencies for the log. Combining this with 
     /// reset will effectively new up a new log.
-    func setDependencies(dependencies: LoggerDI) {
+    func setDependencies(_ dependencies: LoggerDI) {
         updateClosure = dependencies.updateClosure
         promptString = dependencies.promptString
     }

@@ -10,7 +10,7 @@
 struct LoggerDI {
     
     /// This closue can be used to update the View.
-    let updateClosure: ((updatedLog: String) -> Void)
+    let updateClosure: ((_ updatedLog: String) -> Void)
     
     /// The prompt string that will prepend any logged text.
     let promptString: String

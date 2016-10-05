@@ -8,7 +8,7 @@
 
 import Foundation
 
-func Log(logText: String, copyToNS: Bool = true) {
+func Log(_ logText: String, copyToNS: Bool = true) {
     Logger.sharedInstance.log(logText)
     if copyToNS {
         NSLog(logText)

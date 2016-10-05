@@ -12,14 +12,14 @@ class ExampleViewController: UIViewController {
     
     var overlay: OverLay?
     
-    @IBAction func toggleDevMode(sender: AnyObject) {
+    @IBAction func toggleDevMode(_ sender: AnyObject) {
         guard overlay == nil else {
             overlay?.tearDown()
             overlay = nil
             return
         }
         
-        overlay = OverLay(vc: self, textMode: .Dark)
+        overlay = OverLay(vc: self, textMode: .dark)
     }
     
     @IBOutlet weak var log1Button: UIButton!
@@ -27,7 +27,7 @@ class ExampleViewController: UIViewController {
     @IBOutlet weak var log3Button: UIButton!
     @IBOutlet weak var log4Button: UIButton!
     
-    @IBAction func logButtonPress(sender: UIButton) {
+    @IBAction func logButtonPress(_ sender: UIButton) {
         switch sender.tag {
         case 1:
             Log("Button 1 - This is an error")
